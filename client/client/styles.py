@@ -19,6 +19,11 @@ template_content_style = {
     "padding": "1em",
     "margin_bottom": "2em",
     "min_height": "90vh",
+    "align_items": "center"
+}
+
+upload_style = {
+    "style": "width: 1px"
 }
 
 link_style = {

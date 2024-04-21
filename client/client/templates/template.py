@@ -109,7 +109,7 @@ def template(
 
         def templated_page():
             return rx.hstack(
-                sidebar(),
+                #sidebar(),
                 rx.box(
                     rx.vstack(
                         page_content(),
@@ -119,7 +119,7 @@ def template(
                     ),
                     **styles.template_page_style,
                 ),
-                menu_button(),
+                #menu_button(),
                 align="start",
                 background=f"radial-gradient(circle at top right, {rx.color('accent', 2)}, {rx.color('mauve', 1)});",
                 position="relative",

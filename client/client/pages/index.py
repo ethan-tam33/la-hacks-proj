@@ -3,6 +3,9 @@
 from client import styles
 from client.templates import template
 import reflex as rx
+from client.pages.analyze import AnalyzeState
+import subprocess
+import os
 
 class UploadState(rx.State):
     "State of the uploaded images"
@@ -10,6 +13,7 @@ class UploadState(rx.State):
     # uploaded images
     img: list[str]
     count: int
+    pred_score: int
 
     async def count_incr(self):
         self.count += 1
@@ -39,49 +43,69 @@ def index() -> rx.Component:
     Returns:
         The UI for the home page.
     """
+
+    def get_first_file_path(directory):
+        # List all files in the directory
+        files = os.listdir(directory)
+        if files:
+            # Join directory path with the first file name to get the full path
+            first_file_path = os.path.join(directory, files[0])
+        return first_file_path
+
     def upload_and_update_count():
         return [UploadState.count_incr(), UploadState.handle_upload(rx.upload_files(upload_id="upload"))]
+
+    def predict_and_analyze():
+        first_img_path = get_first_file_path(rx.get_upload_dir())
+        output = subprocess.run(["python", "../gemini/gemini_assessment.py", first_img_path, "1"],  stdout=subprocess.PIPE)
+        output = output.stdout.decode('utf-8')
+        return AnalyzeState.update_gemini(output)
 
     return rx.container(
         rx.heading("Reefer", size="9"),
         rx.box(
             "Reefer uses machine learning to analyze a set of images of coral reefs - the most important organisms in the ocean.",
-            text_align="middle",
-        ),
-        rx.box(
-            " "
         ),
         rx.box(
             "Input your images of coral below. Please input at least 3 images.",
             text_align="middle",
         ),
-        rx.upload(
+    
+        rx.center(rx.upload(
             rx.text(
-                "Drag and drop images here or click to select images"
+                "Drag and drop images or click to select images here",
+                text_align="middle"
             ),
             id="upload",
             border="1px dotted rgb(107,99,246)",
-            padding="5em",
-            text_align="middle"
+            padding="2em",
+            width= "200px",
             #accept={'image/png':'.png'}
-        ),
-        rx.box(
+        )),
+        rx.center(rx.box(
             f'Uploaded Images: {UploadState.count}'
-        ),
+        )),
         rx.hstack(rx.foreach(rx.selected_files("upload"), rx.text)),
-        rx.vstack(
-            rx.button(
+        rx.center(rx.stack(
+            rx.center(rx.button(
                 "Upload",
                 on_click=upload_and_update_count
-            ),
-            rx.button(
+            )),
+            rx.center(rx.button(
                 "Clear",
-                on_click=rx.clear_selected_files("upload"),
+                on_click=rx.clear_selected_files("upload")
+            )),
+            rx.link(
+                rx.center(rx.button(
+                "Analyze",
+                on_click=predict_and_analyze
+                )),
+                href='/analyze'
             ),
-        ),
+            flex_direction="column",
+            align="center"
+        )),
         rx.foreach(UploadState.img, lambda img: rx.image(src=rx.get_upload_url(img))),
+        background="center/cover url('')"
 
     )
-    # with open("README.md", encoding="utf-8") as readme:
-    #     content = readme.read()
-    # return rx.markdown(content, component_map=styles.markdown_style)
