@@ -11,9 +11,8 @@ class UploadState(rx.State):
     img: list[str]
     count: int
 
-    # async def upload_files(self):
-    #     self.count += 1
-    #     await self.handle_upload(rx.upload_files(upload_id="upload"))
+    async def count_incr(self):
+        self.count += 1
 
     async def handle_upload(self, files: list[rx.UploadFile]):
         """
@@ -22,6 +21,7 @@ class UploadState(rx.State):
             files: list of uploaded files
         """
         for file in files:
+            print(file)
             upload_data = await file.read()
             outfile = rx.get_upload_dir() / file.filename
 
@@ -40,9 +40,7 @@ def index() -> rx.Component:
         The UI for the home page.
     """
     def upload_and_update_count():
-        print(122)
-        UploadState.count += 1
-        return UploadState.handle_upload(rx.upload_files(upload_id="upload"))
+        return [UploadState.count_incr(), UploadState.handle_upload(rx.upload_files(upload_id="upload"))]
 
     return rx.container(
         rx.heading("Reefer", size="9"),
@@ -74,7 +72,6 @@ def index() -> rx.Component:
         rx.vstack(
             rx.button(
                 "Upload",
-                #on_click=UploadState.handle_upload(rx.upload_files(upload_id="upload")),
                 on_click=upload_and_update_count
             ),
             rx.button(
