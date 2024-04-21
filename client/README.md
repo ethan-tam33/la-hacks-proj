@@ -1,70 +1,69 @@
-# Getting Started with Create React App
+# Welcome to Reflex!
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is the base Reflex template - installed when you run `reflex init`.
 
-## Available Scripts
+If you want to use a different template, pass the `--template` flag to `reflex init`.
+For example, if you want a more basic starting point, you can run:
 
-In the project directory, you can run:
+```bash
+reflex init --template blank
+```
 
-### `npm start`
+## About this Template
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+This template has the following directory structure:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```bash
+├── README.md
+├── assets
+├── rxconfig.py
+└── {your_app}
+    ├── __init__.py
+    ├── components
+    │   ├── __init__.py
+    │   └── sidebar.py
+    ├── pages
+    │   ├── __init__.py
+    │   ├── dashboard.py
+    │   ├── index.py
+    │   └── settings.py
+    ├── styles.py
+    ├── templates
+    │   ├── __init__.py
+    │   └── template.py
+    └── {your_app}.py
+```
 
-### `npm test`
+See the [Project Structure docs](https://reflex.dev/docs/getting-started/project-structure/) for more information on general Reflex project structure.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Adding Pages
 
-### `npm run build`
+In this template, the pages in your app are defined in `{your_app}/pages/`.
+Each page is a function that returns a Reflex component.
+For example, to edit this page you can modify `{your_app}/pages/index.py`.
+See the [pages docs](https://reflex.dev/docs/pages/routes/) for more information on pages.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+In this template, instead of using `rx.add_page` or the `@rx.page` decorator,
+we use the `@template` decorator from `{your_app}/templates/template.py`.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+To add a new page:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. Add a new file in `{your_app}/pages/`. We recommend using one file per page, but you can also group pages in a single file.
+2. Add a new function with the `@template` decorator, which takes the same arguments as `@rx.page`.
+3. Import the page in your `{your_app}/pages/__init__.py` file and it will automatically be added to the app.
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Adding Components
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+In order to keep your code organized, we recommend putting components that are
+used across multiple pages in the `{your_app}/components/` directory.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+In this template, we have a sidebar component in `{your_app}/components/sidebar.py`.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Adding State
 
-## Learn More
+As your app grows, we recommend using [substates](https://reflex.dev/docs/substates/overview/)
+to organize your state.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+You can either define substates in their own files, or if the state is
+specific to a page, you can define it in the page file itself.
