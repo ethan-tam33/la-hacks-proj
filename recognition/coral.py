@@ -53,7 +53,8 @@ print(device)
 
 transformResizer = transforms.Compose([
     transforms.Resize((128, 128)),
-    transforms.ToTensor(),  # Convert images to tensor
+    transforms.ToTensor(),
+    transforms.Normalize((0,0,0), (0.5, 0.5, 0.5))
 ])
 
 dataset = datasets.ImageFolder(root='data', transform = transformResizer)
@@ -144,9 +145,9 @@ val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=True)
 
 # %%
 epochs = 40
-learning_rate = 0.00001
+learning_rate = 0.001
 criterion = torch.nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate)
+optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate, weight_decay=0.1)
 
 net.train()  # Put model in training mode
 for epoch in range(epochs):
