@@ -32,6 +32,10 @@ def menu_item_link(text, href):
     )
 
 
+def logo() -> rx.Component:
+    return rx.box(rx.image("../../../assets/Reefer.png"))
+
+
 def menu_button() -> rx.Component:
     """The menu button on the top right of the page.
 
@@ -120,6 +124,7 @@ def template(
                     **styles.template_page_style,
                 ),
                 #menu_button(),
+                #logo(),
                 align="start",
                 background=f"radial-gradient(circle at top right, {rx.color('accent', 2)}, {rx.color('mauve', 1)});",
                 position="relative",

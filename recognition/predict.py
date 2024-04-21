@@ -4,9 +4,17 @@ from torch import nn
 import numpy as np
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
+from PIL import Image
+import argparse
+import sys
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 device = "cpu"
+
+parser = argparse.ArgumentParser(description='Process some command line inputs.')
+parser.add_argument('arg1', type=str, help='Coral Image')
+args = parser.parse_args()
+img = Image.open(args.arg1)
 #net
 # Basic Block for ResNet
 class BasicBlock(nn.Module):
@@ -64,7 +72,7 @@ class ResNet(nn.Module):
 def ResNet18():
     return ResNet(BasicBlock, [2, 2, 2, 2])
 
-pred_net = torch.load("entire_model.pt", map_location=torch.device('cpu'))
+pred_net = torch.load("../recognition/entire_model.pt", map_location=torch.device('cpu'))
 pred_net = pred_net.to(device)
 pred_net.eval()
 transformResizer = transforms.Compose([
@@ -84,9 +92,12 @@ def predict_fn(pil_img, y = 0):
     pred_img = pred_net(trans_img)
     pred_sig = torch.nn.functional.softmax(pred_img, dim=1)
     confidence = round(torch.max(pred_sig).item(), 5)
-    print("Label Confidence: " + str(confidence))
+    #print("Label Confidence: " + str(confidence))
     pred_label = torch.argmax(pred_img).item()
-    print("Prediction: " + str(pred_label))
+    #print("Prediction: " + str(pred_label))
+    print((pred_label, confidence))
     #print("Ground Truth: " + str(y))
     plt.title("Prediction: " + label_dict[pred_label]  + "\n Confidence: " + str(confidence), loc = 'center')
     return(pred_label, confidence)
+
+sys.stdout.write(str(predict_fn(img)))
