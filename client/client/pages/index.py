@@ -6,6 +6,7 @@ import reflex as rx
 from client.pages.analyze import AnalyzeState
 import subprocess
 import os
+from PIL import Image
 
 class UploadState(rx.State):
     "State of the uploaded images"
@@ -59,7 +60,11 @@ def index() -> rx.Component:
         first_img_path = get_first_file_path(rx.get_upload_dir())
         output = subprocess.run(["python", "../gemini/gemini_assessment.py", first_img_path, "1"],  stdout=subprocess.PIPE)
         output = output.stdout.decode('utf-8')
-        return AnalyzeState.update_gemini(output)
+        img = Image.open(first_img_path)
+
+
+
+        return [AnalyzeState.update_gemini(output)]
 
     return rx.container(
         rx.heading("Reefer", size="9"),
